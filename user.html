@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>MAX — App &amp; Web</title>
+  
+  <!-- FAVICON & ICONS -->
+  <link rel="icon" type="image/png" href="https://i.ibb.co/Wv143T0H/1000060279.png" />
+  <link rel="apple-touch-icon" href="https://i.ibb.co/Wv143T0H/1000060279.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       REAL TRANSPARENT CRYSTAL GLASS DESIGN TOKENS
+       ========================================================================== */
+    :root {
+      --app-icon-url: url('https://i.ibb.co/Wv143T0H/1000060279.png');
+      
+      /* অতি-স্বচ্ছ কাঁচ (True Transparency: পেছনের সবকিছু কাঁচের ভেতর দিয়ে দেখা যাবে) */
+      --glass-surface-ultra: rgba(255, 255, 255, 0.22);
+      --glass-surface-card: rgba(255, 255, 255, 0.32);
+      --glass-surface-dock: rgba(255, 255, 255, 0.38);
+      --glass-surface-btn: rgba(255, 255, 255, 0.28);
+      --glass-surface-btn-hover: rgba(255, 255, 255, 0.45);
+      
+      /* কাঁচের উজ্জ্বল বেভেল এজ ও লাইট রিফ্লেকশন */
+      --glass-border-light: rgba(255, 255, 255, 0.65);
+      --glass-border-top: rgba(255, 255, 255, 0.85);
+      --glass-border-bottom: rgba(0, 0, 0, 0.06);
+
+      /* থ্রি-ডি অপটিক্যাল ডেপথ */
+      --glass-depth: 
+        0 12px 30px rgba(15, 35, 65, 0.08),
+        inset 0 1.5px 2px var(--glass-border-top),
+        inset 0 -1px 1px var(--glass-border-bottom);
+
+      --dock-depth: 
+        0 20px 45px rgba(10, 30, 60, 0.14),
+        inset 0 2px 2px rgba(255, 255, 255, 0.95),
+        inset 0 -1px 1.5px rgba(0, 0, 0, 0.08);
+
+      --apple-blue: #007aff;
+      --apple-blue-glass: rgba(0, 122, 255, 0.16);
+      --apple-green: #34c759;
+      --apple-red: #ff3b30;
+
+      /* লেখা ও আইকন সম্পূর্ণ সলিড এবং ক্রিস্টাল ক্লিয়ার */
+      --text-solid-main: #090f1d;
+      --text-solid-secondary: #3b495d;
+      --text-solid-muted: #6f7f95;
+
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Plus Jakarta Sans", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      color: var(--text-solid-main);
+      font-family: var(--font-stack);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      /* ব্যাকগ্রাউন্ডে আইফোনের মতো রিচ প্যাস্টেল গ্রেডিয়েন্ট যাতে কাঁচের স্বচ্ছতা ফুটে ওঠে */
+      background: linear-gradient(135deg, #e4f1fc 0%, #f6eaf3 50%, #e1f6f1 100%);
+      background-attachment: fixed;
+      padding-bottom: calc(130px + env(safe-area-inset-bottom, 20px));
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ==========================================================================
+       GPU ACCELERATED AMBIENT CANVAS (ZERO-LAG ENGINE)
+       ========================================================================== */
+    .ambient-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      transform: translate3d(0, 0, 0);
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(50px);
+      opacity: 0.65;
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
+      animation: floatLens 16s infinite alternate ease-in-out;
+    }
+    .orb-1 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #9ad2ff 0%, rgba(154, 210, 255, 0) 70%);
+      top: -80px;
+      left: -80px;
+    }
+    .orb-2 {
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, #ffbcd6 0%, rgba(255, 188, 214, 0) 70%);
+      bottom: 10%;
+      right: -100px;
+      animation-duration: 20s;
+      animation-delay: -4s;
+    }
+    .orb-3 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, #aef3e4 0%, rgba(174, 243, 228, 0) 70%);
+      top: 40%;
+      left: 15%;
+      animation-duration: 18s;
+      animation-delay: -2s;
+    }
+    @keyframes floatLens {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      100% { transform: translate3d(50px, 40px, 0) scale(1.1); }
+    }
+
+    /* ==========================================================================
+       REAL TRANSPARENT GLASS (কাঁচের মতো এপাশ থেকে ওপাশে দেখা যাবে)
+       ========================================================================== */
+    .real-glass {
+      background: var(--glass-surface-card);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid var(--glass-border-light);
+      border-top: 1.5px solid var(--glass-border-top);
+      border-bottom: 1px solid var(--glass-border-bottom);
+      box-shadow: var(--glass-depth);
+      position: relative;
+      overflow: hidden;
+      transform: translateZ(0);
+      transition: transform 0.22s cubic-bezier(0.25, 1, 0.5, 1), background 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    /* REAL GLASS BUTTON (কাঁচের বাটন, লেখা সলিড) */
+    .glass-btn {
+      background: var(--glass-surface-btn);
+      backdrop-filter: blur(14px) saturate(170%);
+      -webkit-backdrop-filter: blur(14px) saturate(170%);
+      border: 1px solid var(--glass-border-light);
+      border-top: 1.5px solid var(--glass-border-top);
+      box-shadow: 0 4px 14px rgba(10, 30, 60, 0.06), inset 0 1px 1px #ffffff;
+      color: var(--text-solid-main);
+      font-weight: 700;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .glass-btn:hover {
+      background: var(--glass-surface-btn-hover);
+    }
+    .glass-btn:active {
+      transform: scale(0.96);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    /* প্রাইমারি অ্যাকশন বাটন: অ্যাকসেন্ট ব্লু কাঁচ */
+    .glass-btn-primary {
+      background: linear-gradient(135deg, rgba(0, 122, 255, 0.85), rgba(0, 85, 200, 0.9));
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-top: 1.5px solid #ffffff;
+      box-shadow: 0 8px 22px rgba(0, 122, 255, 0.32), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    /* ==========================================================================
+       STARTUP ANIMATION
+       ========================================================================== */
+    #startup-screen {
+      position: fixed;
+      inset: 0;
+      background: #eaf3fb;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .startup-card {
+      width: 105px;
+      height: 105px;
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      padding: 10px;
+    }
+    .startup-icon-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 18px;
+    }
+    .startup-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--text-solid-main);
+      margin-bottom: 6px;
+    }
+    .startup-dev {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--apple-blue);
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid var(--glass-border-light);
+    }
+
+    /* ==========================================================================
+       MAIN APP SHELL
+       ========================================================================== */
+    .app-shell {
+      position: relative;
+      z-index: 10;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 18px 16px;
+    }
+
+    /* TOP HEADER */
+    .top-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding: 12px 18px;
+      border-radius: var(--radius-xl);
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      flex-shrink: 0;
+    }
+    .brand-text h1 {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--text-solid-main);
+      line-height: 1.1;
+    }
+    .brand-text span {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-solid-muted);
+    }
+    .dev-badge-link {
+      padding: 8px 14px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--apple-blue);
+    }
+    .dev-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--apple-green);
+      box-shadow: 0 0 8px rgba(52, 199, 89, 0.8);
+    }
+
+    /* SEARCH BAR (কাঁচের ইনপুট ফিল্ড) */
+    .search-box-wrap {
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .search-input-field {
+      width: 100%;
+      padding: 15px 18px 15px 50px;
+      border-radius: var(--radius-lg);
+      background: var(--glass-surface-ultra);
+      backdrop-filter: blur(14px) saturate(170%);
+      -webkit-backdrop-filter: blur(14px) saturate(170%);
+      border: 1px solid var(--glass-border-light);
+      border-top: 1.5px solid var(--glass-border-top);
+      color: var(--text-solid-main);
+      font-size: 15px;
+      font-family: inherit;
+      font-weight: 600;
+      outline: none;
+      box-shadow: 0 4px 14px rgba(10, 30, 60, 0.04);
+      transition: all 0.2s ease;
+    }
+    .search-input-field::placeholder {
+      color: var(--text-solid-muted);
+    }
+    .search-input-field:focus {
+      background: rgba(255, 255, 255, 0.45);
+      border-color: var(--apple-blue);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.18);
+    }
+    .search-icon-svg {
+      position: absolute;
+      left: 17px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: var(--text-solid-muted);
+      stroke-width: 2.2;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       CATEGORY CHIPS + "DOWNLOAD APP" ACTION BUTTON
+       ========================================================================== */
+    .filter-scroll-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      scrollbar-width: none;
+      margin-bottom: 20px;
+    }
+    .filter-scroll-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+    .filter-chip {
+      padding: 9px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-solid-secondary);
+      white-space: nowrap;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .filter-chip.active {
+      color: var(--apple-blue);
+      background: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 6px 18px rgba(0, 122, 255, 0.15), inset 0 1px 2px #ffffff;
+      transform: scale(1.02);
+    }
+
+    .btn-download-official-app {
+      margin-left: auto;
+      padding: 9px 16px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(0, 122, 255, 0.85), rgba(0, 85, 200, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-top: 1.5px solid #ffffff;
+      box-shadow: 0 6px 18px rgba(0, 122, 255, 0.28);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-download-official-app svg {
+      width: 15px;
+      height: 15px;
+      stroke: #ffffff;
+      stroke-width: 2.4;
+      fill: none;
+    }
+
+    /* SECTION TITLE */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding: 0 4px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--text-solid-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-badge-icon {
+      width: 18px;
+      height: 18px;
+      stroke: var(--apple-blue);
+      fill: none;
+      stroke-width: 2.4;
+    }
+
+    /* ==========================================================================
+       REAL GLASS APP CARDS
+       ========================================================================== */
+    .catalog-grid, .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .glass-app-card {
+      border-radius: var(--radius-xl);
+      padding: 15px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .glass-app-card:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.45);
+      box-shadow: 0 16px 36px rgba(10, 30, 60, 0.12);
+    }
+    .glass-app-card:active {
+      transform: scale(0.98);
+    }
+
+    .thumb-16-9 {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      background: rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+    .thumb-16-9 img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-meta-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .app-icon-mini {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+      flex-shrink: 0;
+    }
+    .card-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .card-info h3 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-solid-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+    .card-tags {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-solid-secondary);
+      font-weight: 600;
+    }
+    .type-tag {
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid var(--glass-border-light);
+    }
+    .type-tag.app { color: var(--apple-blue); }
+    .type-tag.website { color: #8e2de2; }
+
+    .fav-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      color: var(--text-solid-muted);
+      flex-shrink: 0;
+    }
+    .fav-btn svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+    }
+    .fav-btn.active {
+      color: var(--apple-red);
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 4px 12px rgba(255, 59, 48, 0.2);
+    }
+    .fav-btn.active svg {
+      fill: var(--apple-red);
+    }
+
+    /* EMPTY STATES */
+    .empty-glass-card {
+      border-radius: var(--radius-xl);
+      padding: 48px 20px;
+      text-align: center;
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0 20px;
+    }
+    .empty-icon-wrap {
+      width: 76px;
+      height: 76px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .empty-icon-wrap svg {
+      width: 36px;
+      height: 36px;
+      stroke: var(--apple-blue);
+      fill: none;
+      stroke-width: 2.2;
+    }
+    .empty-glass-card h3 {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--text-solid-main);
+      margin-bottom: 6px;
+    }
+    .empty-glass-card p {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-solid-secondary);
+      max-width: 320px;
+      line-height: 1.5;
+    }
+
+    /* SKELETON */
+    .skeleton-card {
+      height: 200px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(90deg, rgba(255,255,255,0.15) 25%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.15) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.8s infinite linear;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* UPDATE BADGE */
+    .badge-update {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      border-radius: 7px;
+      background: rgba(52, 199, 89, 0.18);
+      border: 1px solid rgba(52, 199, 89, 0.4);
+      color: var(--apple-green);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    /* ==========================================================================
+       REAL TRANSPARENT BOTTOM DOCK (পেছনের কনটেন্ট ও বাটন কাঁচ দিয়ে পরিষ্কার দেখা যাবে)
+       ========================================================================== */
+    .bottom-dock-container {
+      position: fixed;
+      bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      z-index: 9999;
+      padding: 0 16px;
+      pointer-events: none;
+    }
+    .iphone-liquid-dock {
+      pointer-events: auto;
+      width: 100%;
+      max-width: 380px;
+      height: 64px;
+      border-radius: 36px;
+      /* অতি-স্বচ্ছ ডক কাঁচ */
+      background: var(--glass-surface-dock);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border: 1px solid var(--glass-border-light);
+      border-top: 1.5px solid var(--glass-border-top);
+      box-shadow: var(--dock-depth);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 8px;
+    }
+    .dock-tab {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      border-radius: 28px;
+      color: var(--text-solid-muted);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+    .dock-tab svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+      transition: transform 0.2s ease;
+    }
+    .dock-tab span {
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .dock-tab.active {
+      color: var(--apple-blue);
+      /* অ্যাক্টিভ ট্যাবে স্বচ্ছ কাঁচের হাইলাইট পিল */
+      background: rgba(255, 255, 255, 0.55);
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.15), inset 0 1px 1px #ffffff;
+    }
+    .dock-tab.active svg {
+      stroke: var(--apple-blue);
+      transform: scale(1.08);
+    }
+    .dock-tab:active {
+      transform: scale(0.94);
+    }
+
+    /* ==========================================================================
+       DETAILS MODAL SHEET (REAL TRANSPARENT GLASS)
+       ========================================================================== */
+    .sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 35, 0.28);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 10000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.28s ease;
+    }
+    .sheet-backdrop.active {
+      display: flex;
+      opacity: 1;
+    }
+    .iphone-sheet {
+      width: 100%;
+      max-width: 600px;
+      max-height: 88vh;
+      border-radius: 34px 34px 0 0;
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--glass-border-light);
+      border-top: 1.5px solid #ffffff;
+      border-bottom: none;
+      box-shadow: 0 -20px 50px rgba(10, 25, 50, 0.15);
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 20px 20px 45px;
+      position: relative;
+    }
+    .sheet-backdrop.active .iphone-sheet {
+      transform: translateY(0);
+    }
+    .sheet-grab-bar {
+      width: 40px;
+      height: 5px;
+      background: rgba(120, 135, 160, 0.4);
+      border-radius: 10px;
+      margin: 0 auto 18px;
+    }
+    .sheet-close-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      color: var(--text-solid-secondary);
+    }
+    .sheet-hero-header {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+    .sheet-app-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid #ffffff;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+    .sheet-title-info h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-solid-main);
+      margin-bottom: 3px;
+    }
+    .sheet-title-info p {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-solid-secondary);
+    }
+
+    .meta-pills-row {
+      display: flex;
+      gap: 8px;
+      margin: 14px 0 18px;
+      flex-wrap: wrap;
+    }
+    .meta-pill {
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-solid-secondary);
+    }
+    .meta-pill strong {
+      color: var(--text-solid-main);
+      margin-left: 4px;
+    }
+
+    .action-btn-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .action-btn-row .glass-btn {
+      flex: 1;
+      padding: 14px;
+      font-size: 14px;
+    }
+
+    .download-market-card {
+      text-align: center;
+      padding: 20px;
+      border-radius: var(--radius-xl);
+      margin-bottom: 18px;
+    }
+    .download-status-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--apple-blue);
+      margin: 10px 0 8px;
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .progress-bar-container.active {
+      display: block;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #007aff, #5856d6, #007aff);
+      background-size: 200% 100%;
+      animation: indeterminate 1.8s infinite linear;
+    }
+    @keyframes indeterminate {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .sheet-desc-box {
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+    .sheet-desc-box h4 {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--text-solid-main);
+    }
+    .sheet-desc-box p {
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 500;
+      color: var(--text-solid-secondary);
+      white-space: pre-line;
+      word-break: break-word;
+    }
+
+    /* FOOTER */
+    .app-footer {
+      text-align: center;
+      margin-top: 25px;
+      padding: 20px 16px;
+      border-radius: var(--radius-lg);
+    }
+    .footer-copy {
+      font-size: 13px;
+      color: var(--text-solid-secondary);
+      font-weight: 600;
+    }
+    .footer-dev-link {
+      color: var(--apple-blue);
+      text-decoration: none;
+      font-weight: 800;
+    }
+
+    .tab-section {
+      display: none;
+      animation: fadeInTab 0.22s ease;
+    }
+    .tab-section.active {
+      display: block;
+    }
+    @keyframes fadeInTab {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AMBIENT CANVAS (PASTEL GRADIENTS UNDER TRANSPARENT GLASS) -->
+  <div class="ambient-canvas">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- STARTUP SCREEN -->
+  <div id="startup-screen">
+    <div class="startup-card real-glass">
+      <img src="https://i.ibb.co/Wv143T0H/1000060279.png" class="startup-icon-img" alt="MAX Logo" />
+    </div>
+    <div class="startup-title">App &amp; Web</div>
+    <div class="startup-dev">DEV — MAHIN SIR</div>
+  </div>
+
+  <!-- MAIN APP CONTAINER -->
+  <div class="app-shell">
+
+    <!-- TOP HEADER -->
+    <header class="top-header real-glass">
+      <div class="brand-wrap">
+        <img src="https://i.ibb.co/Wv143T0H/1000060279.png" class="brand-logo-img" alt="MAX Logo" />
+        <div class="brand-text">
+          <h1>MAX</h1>
+          <span>App &amp; Web</span>
+        </div>
+      </div>
+      <a href="https://t.me/dngrmahin" target="_blank" rel="noopener noreferrer" class="dev-badge-link glass-btn">
+        <span class="dev-dot"></span>
+        <span>MAHIN SIR</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </a>
+    </header>
+
+    <!-- SEARCH BAR -->
+    <div class="search-box-wrap">
+      <svg class="search-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="global-search" class="search-input-field" placeholder="Search apps, websites, categories..." autocomplete="off" />
+    </div>
+
+    <!-- TAB 1: HOME -->
+    <section id="tab-home" class="tab-section active">
+      <!-- CATEGORY CHIPS + OFFICIAL DOWNLOAD BUTTON -->
+      <div class="filter-scroll-wrapper" id="category-chips">
+        <div class="filter-chip glass-btn active" data-cat="all">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 12 16 12 8"></polygon></svg>
+          All
+        </div>
+        <div class="filter-chip glass-btn" data-cat="app">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="3"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+          Apps
+        </div>
+        <div class="filter-chip glass-btn" data-cat="website">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          Websites
+        </div>
+
+        <!-- DOWNLOAD OFFICIAL APP LINK -->
+        <a href="https://t.me/dngrmahin" target="_blank" id="official-app-btn" class="glass-btn btn-download-official-app">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Download This App</span>
+        </a>
+      </div>
+
+      <!-- FEATURED SECTION -->
+      <div id="featured-wrapper" style="display: none;">
+        <div class="section-header">
+          <h2 class="section-title">
+            <svg class="section-badge-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            Featured
+          </h2>
+        </div>
+        <div class="featured-grid" id="featured-container"></div>
+      </div>
+
+      <!-- CATALOG SECTION -->
+      <div class="section-header">
+        <h2 class="section-title">
+          <svg class="section-badge-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          All Applications
+        </h2>
+      </div>
+
+      <div class="catalog-grid" id="catalog-container">
+        <div class="skeleton-card real-glass"></div>
+        <div class="skeleton-card real-glass"></div>
+      </div>
+    </section>
+
+    <!-- TAB 2: HISTORY -->
+    <section id="tab-history" class="tab-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <svg class="section-badge-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Download History
+        </h2>
+      </div>
+      <div id="history-container" class="catalog-grid"></div>
+    </section>
+
+    <!-- TAB 3: FAVORITES -->
+    <section id="tab-favorites" class="tab-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <svg class="section-badge-icon" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          Favorites
+        </h2>
+      </div>
+      <div id="favorites-container" class="catalog-grid"></div>
+    </section>
+
+    <!-- FOOTER WITH 100% ERROR-FREE REALTIME YEAR -->
+    <footer class="app-footer real-glass">
+      <p class="footer-copy">
+        &copy; <span id="dyn-year">2026</span> MAX &mdash; DEVELOPER <a href="https://t.me/dngrmahin" target="_blank" rel="noopener noreferrer" class="footer-dev-link">MAHIN SIR</a>
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- REAL TRANSPARENT IPHONE DOCK -->
+  <div class="bottom-dock-container">
+    <nav class="iphone-liquid-dock">
+      <div class="dock-tab active" data-target="tab-home">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+      </div>
+      <div class="dock-tab" data-target="tab-history">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>History</span>
+      </div>
+      <div class="dock-tab" data-target="tab-favorites">
+        <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        <span>Favorites</span>
+      </div>
+    </nav>
+  </div>
+
+  <!-- DETAILS & DOWNLOAD SHEET -->
+  <div class="sheet-backdrop" id="detail-sheet-backdrop">
+    <div class="iphone-sheet" id="detail-sheet">
+      <div class="sheet-grab-bar"></div>
+      <button class="sheet-close-btn glass-btn" id="close-sheet-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <div class="sheet-hero-header">
+        <img src="https://i.ibb.co/Wv143T0H/1000060279.png" id="sheet-icon" class="sheet-app-icon" alt="Icon" />
+        <div class="sheet-title-info">
+          <h2 id="sheet-name">Item Name</h2>
+          <p id="sheet-category">Category</p>
+        </div>
+      </div>
+
+      <div class="thumb-16-9" id="sheet-thumb-wrap" style="display: none; margin-bottom: 14px;">
+        <img src="" id="sheet-thumb" alt="Thumbnail" />
+      </div>
+
+      <div class="meta-pills-row">
+        <div class="meta-pill real-glass">TYPE: <strong id="sheet-type">APP</strong></div>
+        <div class="meta-pill real-glass">VERSION: <strong id="sheet-version">1.0</strong></div>
+        <div class="meta-pill real-glass">SIZE: <strong id="sheet-size">--</strong></div>
+      </div>
+
+      <div class="action-btn-row" id="sheet-actions"></div>
+
+      <!-- DIRECT INSTALLER -->
+      <div class="download-market-card real-glass" id="download-box" style="display: none;">
+        <h4 style="color:var(--text-solid-main); font-size: 15px; font-weight:800;">Direct Installer</h4>
+        <div class="download-status-text" id="download-status">Ready to download APK</div>
+        <div class="progress-bar-container" id="progress-container">
+          <div class="progress-bar-fill"></div>
+        </div>
+        <button class="glass-btn glass-btn-primary" id="start-apk-download" style="width: 100%; padding: 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          INSTALL NOW
+        </button>
+      </div>
+
+      <div class="sheet-desc-box real-glass">
+        <h4>About this application</h4>
+        <p id="sheet-description">Description text...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIREBASE MODULAR SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const DEFAULT_APP_ICON = "https://i.ibb.co/Wv143T0H/1000060279.png";
+
+    // EXACT FIREBASE CONFIGURATION
+    const firebaseConfig = {
+      apiKey: "AIzaSyCZuNz-otJvrdvuUzAgs3SKZSEaHtJjpnk",
+      authDomain: "max-top-up-787e9.firebaseapp.com",
+      databaseURL: "https://max-top-up-787e9-default-rtdb.firebaseio.com",
+      projectId: "max-top-up-787e9",
+      storageBucket: "max-top-up-787e9.firebasestorage.app",
+      messagingSenderId: "682013500762",
+      appId: "1:682013500762:web:463f0452e0107a4200ff63"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const rtdb = getDatabase(app);
+    const firestore = getFirestore(app);
+
+    // ZERO-PRESSURE LOCAL CACHING
+    let catalogItems = [];
+    let currentFilter = 'all';
+    let currentActiveItem = null;
+    const CACHE_KEY = "MAX_APP_CATALOG_CACHE_V4";
+    const CACHE_TTL = 5 * 60 * 1000;
+
+    const catalogContainer = document.getElementById('catalog-container');
+    const featuredContainer = document.getElementById('featured-container');
+    const featuredWrapper = document.getElementById('featured-wrapper');
+    const historyContainer = document.getElementById('history-container');
+    const favoritesContainer = document.getElementById('favorites-container');
+    const searchInput = document.getElementById('global-search');
+    const detailSheetBackdrop = document.getElementById('detail-sheet-backdrop');
+    const downloadBox = document.getElementById('download-box');
+    const progressContainer = document.getElementById('progress-container');
+    const downloadStatus = document.getElementById('download-status');
+    const officialAppBtn = document.getElementById('official-app-btn');
+
+    // 1. FAST STARTUP ANIMATION
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const startup = document.getElementById('startup-screen');
+        if (startup) {
+          startup.style.opacity = '0';
+          startup.style.transform = 'scale(1.04)';
+          setTimeout(() => startup.style.display = 'none', 500);
+        }
+      }, 1000);
+    });
+
+    // 2. 100% ERROR-FREE DYNAMIC YEAR RESOLVER (FIXED "Failed to fetch")
+    function resolveYear() {
+      const yearElem = document.getElementById('dyn-year');
+      if (!yearElem) return;
+      yearElem.textContent = new Date().getFullYear();
+
+      // Silent non-blocking API check
+      fetch('https://timeapi.io/api/time/current/zone?timeZone=Asia/Dhaka')
+        .then(r => r.ok ? r.json() : null)
+        .then(d => { if (d && d.year) yearElem.textContent = d.year; })
+        .catch(() => {});
+    }
+    resolveYear();
+
+    // 3. FETCH CONFIG & CATALOG
+    async function fetchCatalog() {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Date.now() - parsed.timestamp < CACHE_TTL && parsed.data && parsed.data.length > 0) {
+            catalogItems = parsed.data;
+            if (parsed.appDownloadUrl) officialAppBtn.href = parsed.appDownloadUrl;
+            renderCatalog();
+            return;
+          }
+        } catch (e) {}
+      }
+
+      let fetchedData = [];
+      let adminAppUrl = "https://t.me/dngrmahin";
+
+      try {
+        const dbRef = ref(rtdb);
+        const confSnap = await get(child(dbRef, 'config/appDownloadUrl'));
+        if (confSnap.exists()) {
+          adminAppUrl = confSnap.val();
+          officialAppBtn.href = adminAppUrl;
+        }
+
+        const snapshot = await get(child(dbRef, 'apps'));
+        if (snapshot.exists()) {
+          const val = snapshot.val();
+          fetchedData = Object.keys(val).map(key => ({
+            itemId: key,
+            ...val[key]
+          }));
+        }
+      } catch (err) {}
+
+      if (fetchedData.length === 0) {
+        try {
+          const querySnapshot = await getDocs(collection(firestore, "apps"));
+          querySnapshot.forEach((doc) => {
+            fetchedData.push({
+              itemId: doc.id,
+              ...doc.data()
+            });
+          });
+        } catch (err) {}
+      }
+
+      catalogItems = fetchedData.filter(item => item.published !== false);
+
+      catalogItems.sort((a, b) => {
+        if (a.order !== undefined && b.order !== undefined) return a.order - b.order;
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      });
+
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        timestamp: Date.now(),
+        data: catalogItems,
+        appDownloadUrl: adminAppUrl
+      }));
+
+      renderCatalog();
+    }
+
+    // 4. RENDER CATALOG ITEMS
+    function renderCatalog() {
+      const q = searchInput.value.trim().toLowerCase();
+      let filtered = catalogItems.filter(item => {
+        const matchFilter = currentFilter === 'all' || item.type === currentFilter || (item.category && item.category.toLowerCase() === currentFilter);
+        const matchSearch = !q || (item.name && item.name.toLowerCase().includes(q)) ||
+                                  (item.category && item.category.toLowerCase().includes(q)) ||
+                                  (item.type && item.type.toLowerCase().includes(q));
+        return matchFilter && matchSearch;
+      });
+
+      const featured = catalogItems.filter(item => item.featured === true);
+      if (featured.length > 0 && !q && currentFilter === 'all') {
+        featuredWrapper.style.display = 'block';
+        featuredContainer.innerHTML = featured.map(item => createCardHTML(item)).join('');
+      } else {
+        featuredWrapper.style.display = 'none';
+      }
+
+      if (filtered.length === 0) {
+        catalogContainer.innerHTML = `
+          <div class="empty-glass-card real-glass">
+            <div class="empty-icon-wrap real-glass">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+            <h3>No applications found</h3>
+            <p>Try exploring another category or check your search keywords.</p>
+          </div>
+        `;
+        return;
+      }
+
+      catalogContainer.innerHTML = filtered.map(item => createCardHTML(item)).join('');
+      bindCardEvents();
+    }
+
+    function createCardHTML(item) {
+      const isFav = isItemFavorited(item.itemId);
+      const thumb = item.thumbnailUrl;
+      const icon = item.iconUrl || DEFAULT_APP_ICON;
+
+      return `
+        <div class="glass-app-card real-glass" data-id="${item.itemId}">
+          ${thumb ? `
+            <div class="thumb-16-9">
+              <img src="${thumb}" alt="${item.name}" loading="lazy" onerror="this.parentElement.style.display='none'" />
+            </div>
+          ` : ''}
+          <div class="card-meta-bar">
+            <img src="${icon}" class="app-icon-mini" alt="${escapeHtml(item.name)}" loading="lazy" onerror="this.src='${DEFAULT_APP_ICON}'" />
+            <div class="card-info">
+              <h3>${escapeHtml(item.name || 'Untitled')}</h3>
+              <div class="card-tags">
+                <span class="type-tag ${item.type || 'app'}">${item.type || 'APP'}</span>
+                <span>•</span>
+                <span>${escapeHtml(item.category || 'General')}</span>
+              </div>
+            </div>
+            <button class="fav-btn glass-btn ${isFav ? 'active' : ''}" data-fav-id="${item.itemId}" title="Bookmark">
+              <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // 5. DETAIL SHEET
+    function bindCardEvents() {
+      document.querySelectorAll('.glass-app-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.fav-btn')) return;
+          const id = card.getAttribute('data-id');
+          openDetailsSheet(id);
+        });
+      });
+
+      document.querySelectorAll('.fav-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute('data-fav-id');
+          toggleFavorite(id);
+          btn.classList.toggle('active');
+        });
+      });
+    }
+
+    function openDetailsSheet(itemId) {
+      const item = catalogItems.find(i => i.itemId === itemId);
+      if (!item) return;
+      currentActiveItem = item;
+
+      document.getElementById('sheet-name').textContent = item.name || 'Untitled';
+      document.getElementById('sheet-category').textContent = item.category || 'General';
+      document.getElementById('sheet-type').textContent = (item.type || 'APP').toUpperCase();
+      document.getElementById('sheet-version').textContent = item.version || 'v1.0';
+      document.getElementById('sheet-size').textContent = item.size || 'N/A';
+      document.getElementById('sheet-description').textContent = item.description || 'No description provided.';
+      
+      const sheetIcon = document.getElementById('sheet-icon');
+      sheetIcon.src = item.iconUrl || DEFAULT_APP_ICON;
+      sheetIcon.onerror = () => { sheetIcon.src = DEFAULT_APP_ICON; };
+
+      const thumbWrap = document.getElementById('sheet-thumb-wrap');
+      const sheetThumb = document.getElementById('sheet-thumb');
+      if (item.thumbnailUrl) {
+        sheetThumb.src = item.thumbnailUrl;
+        thumbWrap.style.display = 'block';
+      } else {
+        thumbWrap.style.display = 'none';
+      }
+
+      downloadBox.style.display = 'none';
+      progressContainer.classList.remove('active');
+      downloadStatus.textContent = 'Ready to download APK';
+
+      const actionRow = document.getElementById('sheet-actions');
+      actionRow.innerHTML = '';
+
+      if (item.downloadUrl) {
+        const dlBtn = document.createElement('button');
+        dlBtn.className = 'glass-btn glass-btn-primary';
+        dlBtn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          DOWNLOAD
+        `;
+        dlBtn.onclick = () => {
+          downloadBox.style.display = 'block';
+          downloadBox.scrollIntoView({ behavior: 'smooth' });
+        };
+        actionRow.appendChild(dlBtn);
+      }
+
+      if (item.websiteUrl) {
+        const webBtn = document.createElement('a');
+        webBtn.href = item.websiteUrl;
+        webBtn.target = '_blank';
+        webBtn.rel = 'noopener noreferrer';
+        webBtn.className = 'glass-btn';
+        webBtn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          VIEW WEBSITE
+        `;
+        actionRow.appendChild(webBtn);
+      }
+
+      detailSheetBackdrop.classList.add('active');
+    }
+
+    document.getElementById('close-sheet-btn').addEventListener('click', () => {
+      detailSheetBackdrop.classList.remove('active');
+    });
+    detailSheetBackdrop.addEventListener('click', (e) => {
+      if (e.target === detailSheetBackdrop) detailSheetBackdrop.classList.remove('active');
+    });
+
+    // 6. SAFE DOWNLOAD ACTION
+    document.getElementById('start-apk-download').addEventListener('click', () => {
+      if (!currentActiveItem || !currentActiveItem.downloadUrl) return;
+
+      downloadStatus.textContent = 'Preparing package...';
+      progressContainer.classList.add('active');
+
+      saveToLocalHistory({
+        itemId: currentActiveItem.itemId,
+        name: currentActiveItem.name,
+        downloadedVersion: currentActiveItem.version || '1.0',
+        iconUrl: currentActiveItem.iconUrl || DEFAULT_APP_ICON,
+        downloadUrl: currentActiveItem.downloadUrl,
+        downloadedAt: Date.now()
+      });
+
+      setTimeout(() => {
+        downloadStatus.textContent = 'Download started!';
+        window.location.href = currentActiveItem.downloadUrl;
+        setTimeout(() => progressContainer.classList.remove('active'), 2500);
+      }, 700);
+    });
+
+    // 7. LOCAL STORAGE HISTORY
+    function getLocalHistory() {
+      try { return JSON.parse(localStorage.getItem('MAX_LOCAL_HISTORY') || '[]'); }
+      catch (e) { return []; }
+    }
+
+    function saveToLocalHistory(entry) {
+      let hist = getLocalHistory();
+      hist = hist.filter(h => h.itemId !== entry.itemId);
+      hist.unshift(entry);
+      localStorage.setItem('MAX_LOCAL_HISTORY', JSON.stringify(hist));
+    }
+
+    function renderHistoryView() {
+      const history = getLocalHistory();
+      if (history.length === 0) {
+        historyContainer.innerHTML = `
+          <div class="empty-glass-card real-glass">
+            <div class="empty-icon-wrap real-glass">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <h3>No download history</h3>
+            <p>Your downloaded applications will appear here with automatic update checking.</p>
+          </div>
+        `;
+        return;
+      }
+
+      historyContainer.innerHTML = history.map(hItem => {
+        const liveCatalogItem = catalogItems.find(c => c.itemId === hItem.itemId);
+        let updateAvailable = false;
+        let latestDownloadUrl = hItem.downloadUrl;
+
+        if (liveCatalogItem && liveCatalogItem.version && liveCatalogItem.version !== hItem.downloadedVersion) {
+          updateAvailable = true;
+          latestDownloadUrl = liveCatalogItem.downloadUrl || hItem.downloadUrl;
+        }
+
+        return `
+          <div class="glass-app-card real-glass">
+            <div class="card-meta-bar">
+              <img src="${hItem.iconUrl || DEFAULT_APP_ICON}" class="app-icon-mini" alt="${escapeHtml(hItem.name)}" onerror="this.src='${DEFAULT_APP_ICON}'" />
+              <div class="card-info">
+                <h3>${escapeHtml(hItem.name)}</h3>
+                <div class="card-tags">
+                  <span>Version: v${escapeHtml(hItem.downloadedVersion)}</span>
+                  ${updateAvailable ? `<span class="badge-update">UPDATE AVAILABLE</span>` : `<span>• Up to date</span>`}
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 6px;">
+              ${updateAvailable ? `
+                <a href="${latestDownloadUrl}" class="glass-btn glass-btn-primary" style="padding: 10px 14px; font-size: 13px;" onclick="updateHistoryVersion('${hItem.itemId}', '${liveCatalogItem.version}')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                  UPDATE NOW
+                </a>
+              ` : `
+                <a href="${hItem.downloadUrl}" class="glass-btn" style="padding: 10px 14px; font-size: 13px;">
+                  RE-DOWNLOAD
+                </a>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.updateHistoryVersion = function(itemId, newVersion) {
+      let hist = getLocalHistory();
+      const target = hist.find(h => h.itemId === itemId);
+      if (target) {
+        target.downloadedVersion = newVersion;
+        target.downloadedAt = Date.now();
+        localStorage.setItem('MAX_LOCAL_HISTORY', JSON.stringify(hist));
+      }
+    };
+
+    // 8. FAVORITES
+    function getFavorites() {
+      try { return JSON.parse(localStorage.getItem('MAX_FAVORITES') || '[]'); }
+      catch (e) { return []; }
+    }
+    function isItemFavorited(itemId) {
+      return getFavorites().includes(itemId);
+    }
+    function toggleFavorite(itemId) {
+      let favs = getFavorites();
+      if (favs.includes(itemId)) {
+        favs = favs.filter(id => id !== itemId);
+      } else {
+        favs.push(itemId);
+      }
+      localStorage.setItem('MAX_FAVORITES', JSON.stringify(favs));
+    }
+    function renderFavoritesView() {
+      const favIds = getFavorites();
+      const favItems = catalogItems.filter(item => favIds.includes(item.itemId));
+
+      if (favItems.length === 0) {
+        favoritesContainer.innerHTML = `
+          <div class="empty-glass-card real-glass">
+            <div class="empty-icon-wrap real-glass">
+              <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </div>
+            <h3>No favorites added</h3>
+            <p>Save your favorite apps and websites for quick offline access.</p>
+          </div>
+        `;
+        return;
+      }
+      favoritesContainer.innerHTML = favItems.map(item => createCardHTML(item)).join('');
+      bindCardEvents();
+    }
+
+    // 9. DOCK NAVIGATION
+    document.querySelectorAll('.dock-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.dock-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+
+        tab.classList.add('active');
+        const targetId = tab.getAttribute('data-target');
+        document.getElementById(targetId).classList.add('active');
+
+        if (targetId === 'tab-history') renderHistoryView();
+        if (targetId === 'tab-favorites') renderFavoritesView();
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+
+    // 10. FILTER CHIPS
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentFilter = chip.getAttribute('data-cat');
+        renderCatalog();
+      });
+    });
+
+    // 11. SEARCH
+    searchInput.addEventListener('input', () => {
+      renderCatalog();
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    fetchCatalog();
+  </script>
+</body>
+</html>
